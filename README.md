@@ -1,10 +1,11 @@
 # simpleX
-**a simple file explorer using index to browse under terminal**
+## **a simple file explorer using index to browse under terminal**
+<br>
 ![](https://github.com/b2ns/simpleX/blob/master/demo.gif)
 ## install
 just copy the shell script to ~/bin/ or anywhere that has been added to $PATH<br>
 type simplex to launch it.
-## help
+### help
      use index(number) to select a item
     'help'                       show help  
     'note'                       show note
@@ -39,7 +40,7 @@ type simplex to launch it.
              untar index1 index2 ... or untar * 
     'q' or 'quit' or 'exit'      exit simpleX
     
-## note
+### note
     1.the initial path is home,you can start with other path by doing :
              `simplex path`
     2.you must use index instead of file's name to select a file
