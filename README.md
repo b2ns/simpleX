@@ -1,5 +1,8 @@
 # simpleX
 **a simple file explorer using index to browse under terminal**
+## install
+just copy the shell script to ~/bin/ or anywhere that has been added to $PATH<br>
+type simplex to launch it.
 ## help
      use index(number) to select a item
     'help'                       show help  
