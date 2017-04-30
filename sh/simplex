@@ -1,0 +1,674 @@
+#!/bin/bash
+#################################################
+# simpleX                                       #
+# A simple file explorer using index to browse  #
+# Version: 1.0                                  #
+# Author: b2ns (doesn't look like a name at all)#
+#################################################
+
+#set default path
+[ "$#" != "0" ] && cd "$1" || cd ~
+
+#declare global variable and temp file
+linecount=""
+
+hidden=false
+detail=false
+mark=false
+
+clipboard=""
+copycut=""
+pastepath=""
+
+markpath=""
+prepath=""
+
+cmd=""
+parameters=""
+
+filelist=/tmp/simplex.filelist
+detaillist=/tmp/simplex.detaillist
+clipboardlist=/tmp/simplex.clipboardlist
+findlist=/tmp/simplex.findlist
+morelist=/tmp/simplex.morelist
+
+trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
+
+#define function
+showList()
+{
+  clear
+  [ "$PWD" = "$markpath" ] && echo -e "\033[1;36mmarked directory\033[0m"
+  #echo -e "\033[1;35msimpleX\033[0m"
+  #echo -e "\033[1;30m**************************************\033[0m"
+
+  if [ -s "$findlist" ];then
+	cp $findlist $filelist
+	:>$findlist
+	detail=false
+	echo -e "\033[1;36msearch result:\033[0m"
+  elif [ "$hidden" = "false" ] && [ "$detail" = "false" ];then
+	ls > $filelist
+  elif [ "$hidden" = "true" ] && [ "$detail" = "true" ];then
+	ls -alh > $detaillist && sed -i '1d' $detaillist
+	ls -a > $filelist
+  elif [ "$hidden" = "true" ];then
+	ls -a > $filelist
+  else
+	ls -lh > $detaillist && sed -i '1d' $detaillist
+	ls > $filelist
+  fi
+
+  linecount=$(sed -n '$=' $filelist)
+
+  echo
+
+  index=1
+  if [ "$detail" = "false" ];then
+	cat $filelist | while read name
+	do
+	  if [ -L "$name" ];then
+		echo -e "[\033[1;32m$index\033[0m] \033[1;36m$name\033[0m" >> $morelist
+	  elif [ -d "$name" ];then
+		echo -e "[\033[1;32m$index\033[0m] \033[1;34m$name\033[0m" >> $morelist
+	  elif [ -x "$name" ];then
+		echo -e "[\033[1;32m$index\033[0m] \033[1;32m$name\033[0m" >> $morelist
+	  else
+		echo -e "[\033[1;32m$index\033[0m] \033[0m$name\033[0m" >> $morelist
+	  fi
+	  index=$((index+1))
+	done
+  else
+	cat $detaillist | while read name
+	do
+	  echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" >> $morelist
+	  index=$((index+1))
+	done
+  fi
+
+  more -d $morelist
+  :> $morelist
+
+  echo
+  #echo -e "\033[1;30m**************************************\033[0m"
+  #echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
+}
+
+isNumber()
+{
+  expr "$1" + 1 &> /dev/null && return 0 || return 1
+}
+
+noPara()
+{
+  if [ "$cmd" = "$parameters" ];then
+	echo -e "\033[1;31mneed parameters !\033[0m"
+	read -r
+	return 0
+  fi
+  return 1
+}
+
+paraCheck()
+{
+  parameters=$(echo "$parameters" | sed 's/*//g')
+}
+
+selectAll()
+{
+  if [ "${parameters%% *}" = "*" ];then
+	parameters=$(seq $linecount)
+	return 0
+  fi
+  return 1
+}
+
+isCmd()
+{
+  path=$PATH
+  while : ;do
+	dir=${path%%:*}
+	tmp=""
+	tmp=$(find "$dir" -name "$1" 2>/dev/null)
+	if [ "$tmp" != "" ];then
+	  return 0
+	  break
+	fi
+	path=${path#*:}
+	[ "$dir" = "$path" ] && break
+  done
+  return 1
+}
+
+Mkfile()
+{
+  noPara && return 1
+
+  touch $parameters
+  return 0
+}
+
+Mkdir()
+{
+  noPara && return 1
+
+  mkdir $parameters
+  return 0
+}
+
+Mklink()
+{
+  noPara && return 1
+
+  while :
+  do
+	num=${parameters%% *}
+	parameters=${parameters#* }
+	linkname=${parameters%% *}
+	parameters=${parameters#* }
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  filename=$(sed -n ${num}p $filelist)
+	  ln -s "$filename" "$linkname"
+	  tmp=${parameters%% *}
+	  [ "$parameters" = "$tmp" ] && break
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	  read -r
+	  break
+	fi
+  done
+  return 0
+}
+
+Delete()
+{
+  noPara && return 1
+
+  all=false
+  selectAll && all=true
+  paraCheck
+
+  for num in $parameters
+  do
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  filename=$(sed -n ${num}p $filelist)
+	  if [ "$all" = "false" ];then
+		echo -e "\033[1;35m"$filename"\033[0m\033[1;37m will be deleted ? (y/n): \033[0m\c"
+		read -r yesno
+		[ "$yesno" = "y" ] && (rm "$filename" || rmdir "$filename")
+	  else
+		rm "$filename" || rmdir "$filename"
+	  fi
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	  read -r
+	fi
+  done
+  return 0
+}
+
+Copy()
+{
+  noPara && return 1
+
+  copycut="copy"
+  pastepath="$PWD"
+  cp $filelist $clipboardlist
+  clipboard=""
+  filename=""
+
+  selectAll
+  paraCheck
+
+  for num in $parameters
+  do
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  clipboard="$clipboard $num"
+	  name=$(sed -n ${num}p $filelist)
+	  filename="$filename\n$name"
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	fi
+  done
+
+  if [ "$filename" != "" ] ;then
+	echo -e "\033[1;35m"$filename"\033[0m"
+	echo
+	echo -e "\033[1;37mhas been copied to the clipboard !\033[0m"
+  fi
+  read -r
+  return 0
+}
+
+Cut()
+{
+  noPara && return 1
+
+  copycut="cut"
+  pastepath="$PWD"
+  cp $filelist $clipboardlist
+  clipboard=""
+  filename=""
+
+  selectAll
+  paraCheck
+
+  for num in $parameters
+  do
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  clipboard="$clipboard $num"
+	  name=$(sed -n ${num}p $filelist)
+	  filename="$filename\n$name"
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	fi
+  done
+
+  if [ "$filename" != "" ] ;then
+	echo -e "\033[1;35m"$filename"\033[0m"
+	echo
+	echo -e "\033[1;37mhas been cut to the clipboard !\033[0m"
+  fi
+  read -r
+  return 0
+}
+
+Paste()
+{
+  if [ "$clipboard" = "" ];then
+	  echo -e "\033[1;31mclipboard is empty !\033[0m"
+	  read -r
+	  return 1
+  fi
+
+  if [ "$copycut" = "copy" ];then
+	for num in $clipboard
+	do
+	  filename=$(sed -n ${num}p $clipboardlist)
+	  [ "$filename" != "" ]  && cp "$pastepath/$filename" ./
+	done
+  elif [ "$copycut" = "cut" ];then
+	for num in $clipboard
+	do
+	  filename=$(sed -n ${num}p $clipboardlist)
+	  [ "$filename" != "" ]  && mv "$pastepath/$filename" ./
+	done
+	clipboard=""
+  fi
+  return 0
+}
+
+Rename()
+{
+  noPara && return 1
+
+  while :
+  do
+	num=${parameters%% *}
+	parameters=${parameters#* }
+	newname=${parameters%% *}
+	parameters=${parameters#* }
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  oldname=$(sed -n ${num}p $filelist)
+	  mv "$oldname" "$newname"
+	  tmp=${parameters%% *}
+	  [ "$parameters" = "$tmp" ] && break
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	  read -r
+	  break
+	fi
+  done
+  return 0
+}
+
+Find()
+{
+  noPara && return 1
+
+  parameters=${parameters%% *}
+  find ./ -mount -maxdepth 1 -iname "$parameters" > $findlist
+  sed -i 's/^..//' $findlist
+
+  if [ -s "$findlist" ];then
+	return 0
+  else
+	echo -e "\033[1;31mno such file !\033[0m"
+	read -r
+	return 1
+  fi
+}
+
+Tar()
+{
+  noPara && return 1
+
+  pkgname=${parameters%% *}
+  pkgname=$(echo "$pkgname" | sed 's/*//g')
+  pkgformat=${pkgname##*.}
+  tmp=${pkgname%.*}
+  istar=${tmp##*.}
+
+  if [ "$pkgformat" != "zip" ] && ([ "$istar" != "tar" ] || ([ "$pkgformat" != "gz" ] && [ "$pkgformat" != "bz2" ] && [ "$pkgformat" != "xz" ]));then
+	echo -e "\033[1;31mthe format of compressed file must be :\n*.zip *.tar.gz *.tar.bz2 *.tar.xz !\033[0m"
+	read -r
+	return 1
+  fi
+
+  parameters=${parameters#* }
+  selectAll
+  paraCheck
+
+  i=0
+  for num in $parameters
+  do
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  filename=$(sed -n ${num}p $filelist)
+	  array[$i]="$filename"
+	  i=$((i+1))
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	  read -r
+	  return 1
+	fi
+  done
+  
+  case "$pkgformat" in
+	"gz" )
+	  tar -zcvf "$pkgname" "${array[@]}";;
+	"bz2" )
+	  tar -jcvf "$pkgname" "${array[@]}";;
+	"xz" )
+	  tar -Jcvf "$pkgname" "${array[@]}";;
+	"zip" )
+	  zip -r "$pkgname" "${array[@]}";;
+  esac
+
+  for((j=0;j<i;j++));do
+	array[$j]=""
+  done
+  return 0
+}
+
+Untar()
+{
+  noPara && return 1
+
+  selectAll
+  paraCheck
+
+  for num in $parameters
+  do
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  filename=$(sed -n ${num}p $filelist)
+	  pkgformat=${filename##*.}
+	  if [ "$filename" = "$pkgformat" ] ;then
+		echo -e "\033[1;35m$filename \033[0m\033[1;31mcan't be decompressed !\033[0m"
+		read -r
+		continue
+	  fi
+	  dirname=${filename%%.*}
+
+	  case "$pkgformat" in
+		"gz" )
+		  [ -d "$dirname" ] || mkdir "$dirname"
+		  tar -zxvf "$filename" -C "$dirname" || rmdir "$dirname";;
+		"bz2" )
+		  [ -d "$dirname" ] || mkdir "$dirname"
+		  tar -jxvf "$filename" -C "$dirname" || rmdir "$dirname";;
+		"xz" )
+		  [ -d "$dirname" ] || mkdir "$dirname"
+		  tar -Jxvf "$filename" -C "$dirname" || rmdir "$dirname";;
+		"zip" )
+		  unzip -d "$dirname" "$filename" || rmdir "$dirname";;
+		* )
+		echo -e "\033[1;35m$filename \033[0m\033[1;31mcan't be decompressed !\033[0m"
+		read -r
+		;;
+	  esac
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	  read -r
+	fi
+  done
+  return 0
+}
+
+Play()
+{
+  ./"$filename" 2> /dev/null || xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
+  read -r
+}
+
+cmdPlay()
+{
+  #noPara && return 1
+  if [ "$cmd" = "$parameters" ];then
+	$cmd
+	read -r
+	return 0
+  fi
+
+  parameters=${parameters%% *}
+  for num in $parameters
+  do
+	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
+	  filename=$(sed -n ${num}p $filelist)
+	  $cmd "$filename"
+	else
+	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+	  read -r
+	fi
+  done
+  read -r
+}
+
+Help()
+{
+  echo -e "\033[1;33mHELP:\033[0m"
+  echo " use index(number) to select a item"
+  echo " 'help'                       show help"
+  echo " 'note'                       show note"
+  echo " '..' or 'u' or 'up'          go upper directory"
+  echo " '.' or 'r' or 'refresh'      refresh screen"
+  echo " '~' or 'home'                go home"
+  echo " '/' or 'root'                go root"
+  echo " 'm' or 'mark'                mark a directory"
+  echo " 'b' or 'back'                go back to a marked directory"
+  echo " 'a' or 'all'                 show hidden files"
+  echo " 'll'                         show detail"
+  echo " 'mkfile'                     make empty files"
+  echo "          mkfile name1 name2 ..."
+  echo 
+  echo " 'mkdir'                      make directories"
+  echo "          mkdir name1 name2 ..."
+  echo 
+  echo " 'mklink'                     make soft link"
+  echo "          mklink index1 name1 index2 name2 ..."
+  echo 
+  echo " 'rm' or 'del'                delete"
+  echo "          rm index1 index2 ... or rm * "
+  echo 
+  echo " 'cp' or 'copy'               copy to clipboard"
+  echo "          cp index1 index2 ... or cp * "
+  echo 
+  echo " 'cut'                        cut to clipboard"
+  echo "          cut index1 index2 ... or cut * "
+  echo 
+  echo " 'p' or 'paste'               paste"
+  echo " 'rn' or 'rename'             rename"
+  echo "          rn index1 name1 index2 name2 ..."
+  echo 
+  echo " 'find'                       find"
+  echo "          find patten"
+  echo 
+  echo " 'tar'                        compress"
+  echo "          tar name index1 index2 ... or tar name * "
+  echo 
+  echo " 'untar'                      decompress"
+  echo "          untar index1 index2 ... or untar * "
+  echo 
+  echo " 'q' or 'quit' or 'exit'      exit simpleX"
+  return 0
+}
+
+Note()
+{
+  echo -e "\033[1;33mNOTE:\033[0m"
+  echo "1.the initial path is home,you can start with other path by doing :"
+  echo "          simplex path"
+  echo "2.you must use index instead of file's name to select a file"
+  echo "3.after inputting 'a' or 'll' to show hidden file and detail,you can input it again to hide"
+  echo "4.using 'b' or 'back' allows you to switch between current directory and a marked directory,just input it once again"
+  echo "5.space and blank is not allowed while you name a file"
+  echo "6.you can list files match certain patter by using 'find',and deal with them all by using '*' afterwards such as rm *, cp *,tar name *"
+  echo "7.only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip"
+  echo "8.default App is used to open a file,you are allowed to choose another App to open it by doing :"
+  echo "          AppName index"
+  echo "9.some simple command without options are supported,but can only take one parameter"
+  return 0
+}
+
+Broswer()
+{
+  showList
+
+  while :
+  do
+	
+	#echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
+	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$ \c"
+	read -r input
+	cmd=${input%% *}
+	parameters=${input#* }
+
+	if isNumber "$input"
+	then
+	  if [ "$input" -gt "$linecount" ] || [ "$input" -le "0" ]
+	  then
+		echo -e "\033[1;31mout of range !\033[0m"
+		echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
+		read -r
+	  else
+		filename=$(sed -n ${input}p $filelist)
+		[ -d "$filename" ] && cd "$filename" && showList || Play
+	  fi
+	elif [ "$input" = "" ] 
+	then
+	  continue
+	elif [ "$input" = ".." ] || [ "$input" = "u" ]|| [ "$input" = "up" ] 
+	then
+	  cd ..
+	  showList
+	elif [ "$input" = "." ] || [ "$input" = "r" ] || [ "$input" = "refresh" ] 
+	then
+	  showList
+	elif [ "$input" = "/" ] || [ "$input" = "root" ] 
+	then
+	  cd /
+	  showList
+	elif [ "$input" = "~" ] || [ "$input" = "home" ] 
+	then
+	  cd ~
+	  showList
+	elif [ "$input" = "m" ] || [ "$input" = "mark" ] 
+	then
+	  prepath="$markpath"
+	  markpath="$PWD"
+	  echo -e "\033[1;37mthis directory has been marked !\nuse 'b' or 'back' to goback here directly !\033[0m"
+	  read -r
+	elif [ "$input" = "b" ] || [ "$input" = "back" ] 
+	then
+	  if [ "$markpath" != "" ];then
+		[ "$PWD" != "$markpath" ] && prepath="$PWD" && cd "$markpath" || cd $prepath
+		showList
+	  else
+		echo -e "\033[1;31mno directory is marked !\033[0m"
+		read -r
+	  fi
+	elif [ "$input" = "a" ] || [ "$input" = "all" ] 
+	then
+	  [ "$hidden" = "true" ] && hidden=false || hidden=true
+	  showList
+	elif [ "$input" = "ll" ]
+	then
+	  [ "$detail" = "true" ] && detail=false || detail=true
+	  showList
+	elif [ "$input" = "p" ] || [ "$input" = "paste" ] 
+	then
+	  Paste && showList
+	elif [ "$input" = "help" ] 
+	then
+	  Help
+	elif [ "$input" = "note" ] 
+	then
+	  Note
+	elif [ "$input" = "q" ] || [ "$input" = "quit" ] || [ "$input" = "exit" ] 
+	then
+	  break
+	elif [ "$cmd" = "mkfile" ] 
+	then
+	  Mkfile && showList
+	elif [ "$cmd" = "mkdir" ] 
+	then
+	  Mkdir && showList
+	elif [ "$cmd" = "mklink" ] 
+	then
+	  Mklink && showList
+	elif [ "$cmd" = "rm" ] || [ "$cmd" = "del" ] 
+	then
+	  Delete && showList
+	elif [ "$cmd" = "cp" ] || [ "$cmd" = "copy" ] 
+	then
+	  Copy
+	elif [ "$cmd" = "cut" ] 
+	then
+	  Cut
+	elif [ "$cmd" = "rn" ] || [ "$cmd" = "rename" ] 
+	then
+	  Rename && showList
+	elif [ "$cmd" = "find" ] 
+	then
+	  Find && showList
+	elif [ "$cmd" = "tar" ] 
+	then
+	  Tar && showList
+	elif [ "$cmd" = "untar" ] 
+	then
+	  Untar && showList
+	elif isCmd "$cmd"
+	then
+	  cmdPlay
+	else
+	  echo -e "\033[1;31munknown command !\033[0m"
+	  read -r
+	fi
+  done
+}
+
+#main function
+clear
+echo "************************************************"
+echo -e "*                 \033[1;32msimpleX\033[0m                      *"
+echo "* A simple file explorer using index to browse *"
+echo "* Version: 1.0                                 *"
+echo -e "* Author: \033[1;35mb2ns\033[0m                                 *"    
+echo "************************************************"
+echo
+
+Note
+
+while : ;do
+  echo
+  echo -e "\033[1;32minput help for help or anything else to continue : \033[0m\c"
+  read -r input
+  if [ "$input" = "help" ];then
+	Help
+  else
+	break;
+  fi
+done
+
+Broswer
+
+exit 0
