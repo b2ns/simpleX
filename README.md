@@ -41,7 +41,7 @@ type simplex to launch it.
     
 ### note
     1.the initial path is home,you can start with other path by doing :
-             `simplex path`
+             simplex path
     2.you must use index instead of file's name to select a file
     3.after inputting 'a' or 'll' to show hidden file and detail,you can input it again to hide
     4.using 'b' or 'back' allows you to switch between current directory and a marked directory,just input it once again
@@ -49,6 +49,6 @@ type simplex to launch it.
     6.you can list files match certain patter by using 'find',and deal with them all by using '*' afterwards such as rm *, cp *,tar name *
     7.only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip
     8.default App is used to open a file,you are allowed to choose another App to open it by doing :
-             `AppName index`
+             AppName index
     9.some simple command without options are supported,but can only take one parameter
     
