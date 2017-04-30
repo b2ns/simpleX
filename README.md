@@ -41,7 +41,8 @@
     2.you must use index instead of file's name to select a file
     3.after inputting 'a' or 'll' to show hidden file and detail,you can input it again to hide
     4.using 'b' or 'back' allows you to switch between current directory and a marked directory,just input it once again
-    5.space and blank is not allowed while you name a file    6.you can list files match certain patter by using 'find',and deal with them all by using '*' afterwards such as rm *, cp *,tar name *
+    5.space and blank is not allowed while you name a file   
+    6.you can list files match certain patter by using 'find',and deal with them all by using '*' afterwards such as rm *, cp *,tar name *
     7.only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip
     8.default App is used to open a file,you are allowed to choose another App to open it by doing :
              `AppName index`
