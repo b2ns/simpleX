@@ -1,5 +1,5 @@
 # simpleX
-**a simple file explorer using index to browse**
+**a simple file explorer using index to browse under terminal**
 ## help
      use index(number) to select a item
     'help'                       show help  
