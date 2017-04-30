@@ -1,6 +1,5 @@
 # simpleX
 ## **a simple file explorer using index to browse under terminal**
-<br>
 ![](https://github.com/b2ns/simpleX/blob/master/demo.gif)
 ## install
 just copy the shell script to ~/bin/ or anywhere that has been added to $PATH<br>
