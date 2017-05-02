@@ -285,13 +285,25 @@ Paste()
 	for num in $clipboard
 	do
 	  filename=$(sed -n ${num}p $clipboardlist)
-	  [ "$filename" != "" ]  && cp "$pastepath/$filename" ./
+	  copyname="$filename"
+	  i=0
+	  while [ -f "$copyname" ];do
+		copyname="${filename}($i)"
+		i=$((i+1))
+	  done
+	  cp "$pastepath/$filename" "./$copyname"
 	done
   elif [ "$copycut" = "cut" ];then
 	for num in $clipboard
 	do
 	  filename=$(sed -n ${num}p $clipboardlist)
-	  [ "$filename" != "" ]  && mv "$pastepath/$filename" ./
+	  copyname="$filename"
+	  i=0
+	  while [ -f "$copyname" ];do
+		copyname="${filename}($i)"
+		i=$((i+1))
+	  done
+	  mv "$pastepath/$filename" "./$copyname"
 	done
 	clipboard=""
   fi
@@ -437,7 +449,7 @@ Untar()
 Play()
 {
   ./"$filename" 2> /dev/null || xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
-  read -r
+  read -r 
 }
 
 cmdPlay()
@@ -575,7 +587,7 @@ Broswer()
 	then
 	  prepath="$markpath"
 	  markpath="$PWD"
-	  echo -e "\033[1;37mthis directory has been marked !\nuse 'b' or 'back' to goback here directly !\033[0m"
+	  echo -e "\033[1;37mthis directory has been marked !\033[0m"
 	  read -r
 	elif [ "$input" = "b" ] || [ "$input" = "back" ] 
 	then
