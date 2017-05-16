@@ -26,11 +26,11 @@ prepath=""
 cmd=""
 parameters=""
 
-filelist=/tmp/simplex.filelist
-detaillist=/tmp/simplex.detaillist
-clipboardlist=/tmp/simplex.clipboardlist
-findlist=/tmp/simplex.findlist
-morelist=/tmp/simplex.morelist
+filelist=/tmp/simplex.filelist.$$
+detaillist=/tmp/simplex.detaillist.$$
+clipboardlist=/tmp/simplex.clipboardlist.$$
+findlist=/tmp/simplex.findlist.$$
+morelist=/tmp/simplex.morelist.$$
 
 trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
 
