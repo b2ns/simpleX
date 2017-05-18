@@ -159,22 +159,17 @@ Mkdir()
 Mklink()
 {
   noPara && return 1
+  selectAll
+  paraCheck
 
-  while :
+  for num in $parameters
   do
-	num=${parameters%% *}
-	parameters=${parameters#* }
-	linkname=${parameters%% *}
-	parameters=${parameters#* }
 	if isNumber "$num" && [ "$num" -gt "0" ] && [ "$num" -le "$linecount" ];then
 	  filename=$(sed -n ${num}p $filelist)
-	  ln -s "$filename" "$linkname"
-	  tmp=${parameters%% *}
-	  [ "$parameters" = "$tmp" ] && break
+	  ln -s "$PWD/$filename" "${filename}.link"
 	else
 	  echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
 	  read -r
-	  break
 	fi
   done
   return 0
@@ -504,7 +499,7 @@ Help()
   echo "          mkdir name1 name2 ..."
   echo 
   echo " 'mklink'                     make soft link"
-  echo "          mklink index1 name1 index2 name2 ..."
+  echo "          mklink index1 index2 ... or mklink * "
   echo 
   echo " 'rm' or 'del'                delete"
   echo "          rm index1 index2 ... or rm * "
