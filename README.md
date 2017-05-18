@@ -21,7 +21,7 @@ type simplex to launch it.
     'mkdir'                      make directories
              mkdir name1 name2 ...
     'mklink'                     make soft link
-             mklink index1 name1 index2 name2 ...
+             mklink index1 index2 ... or mklink *
     'rm' or 'del'                delete
              rm index1 index2 ... or rm * 
     'cp' or 'copy'               copy to clipboard
