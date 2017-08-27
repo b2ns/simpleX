@@ -66,7 +66,7 @@ showList()
 
   index=1
   if [ "$detail" = "false" ];then
-	cat $filelist | while read name
+	while read name
 	do
 	  if [ -L "$name" ];then
 		echo -e "[\033[1;32m$index\033[0m] \033[1;36m$name\033[0m" #>> $morelist
@@ -78,13 +78,13 @@ showList()
 		echo -e "[\033[1;32m$index\033[0m] \033[0m$name\033[0m" #>> $morelist
 	  fi
 	  index=$((index+1))
-	done
+	done < $filelist
   else
-	cat $detaillist | while read name
+	while read name
 	do
 	  echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" #>> $morelist
 	  index=$((index+1))
-	done
+	done < $detaillist
   fi
 
   #more -d $morelist
@@ -489,7 +489,7 @@ cmdPlay()
   fi
 
   prefix="n"
-  filenum=$(echo $parameters |grep -o "$prefix[0-9]\{1,\}")
+  filenum=$(echo $parameters | grep -o "$prefix[0-9]\{1,\}")
   for num in $filenum
   do
 	num=${num#?}
@@ -591,7 +591,7 @@ Broswer()
 	
 	#echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
 	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$ \c"
-	read -r input
+	read -e input
 	cmd=${input%% *}
 	parameters=${input#* }
 
