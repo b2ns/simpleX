@@ -104,7 +104,7 @@ noPara()
 {
   if [ "$cmd" = "$parameters" ];then
 	echo -e "\033[1;31mneed parameters !\033[0m"
-	read -r
+	read -es -n1 -t3
 	return 0
   fi
   return 1
@@ -121,7 +121,7 @@ numCheck()
 	return 0
   else
 	echo -e "\033[1;31m$1 is out of range! please use index between 1~$linecount !\033[0m"
-	read -r
+	read -es -n1 -t3
 	return 1
   fi
 }
@@ -130,7 +130,7 @@ existCheck()
 {
   if [ -e "$1" ];then
 	echo -e "\033[1;31m$1 already exists !\033[0m"
-	read -r
+	read -es -n1 -t3
 	return 1
   fi
   return 0
@@ -271,7 +271,7 @@ Paste()
 {
   if [ "$clipboard" = "" ];then
 	  echo -e "\033[1;31mclipboard is empty !\033[0m"
-	  read -r
+	  read -es -n1 -t3
 	  return 1
   fi
 
@@ -391,7 +391,7 @@ Pack()
 
   if [ "$pkgformat" != "zip" ] && ([ "$istar" != "tar" ] || ([ "$pkgformat" != "gz" ] && [ "$pkgformat" != "bz2" ] && [ "$pkgformat" != "xz" ]));then
 	echo -e "\033[1;31mthe format of compressed file must be :\n*.zip *.tar.gz *.tar.bz2 *.tar.xz !\033[0m"
-	read -r
+	read -es -n1 -t3
 	return 1
   fi
 
@@ -442,7 +442,7 @@ Unpack()
 	  pkgformat=${filename##*.}
 	  if [ "$filename" = "$pkgformat" ] ;then
 		echo -e "\033[1;35m$filename \033[0m\033[1;31mcan't be decompressed !\033[0m"
-		read -r
+		read -es -n1 -t3
 		continue
 	  fi
 
@@ -466,7 +466,7 @@ Unpack()
 		* )
 		  rmdir "$dirname"
 		echo -e "\033[1;35m$filename \033[0m\033[1;31mcan't be decompressed !\033[0m"
-		read -r
+		read -es -n1 -t3
 		;;
 	  esac
 	fi
@@ -477,14 +477,14 @@ Unpack()
 Play()
 {
   ./"$filename" 2> /dev/null || xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
-  read -r 
+  read -es -n1 -t3 
 }
 
 cmdPlay()
 {
   if [ "$cmd" = "$parameters" ];then
 	$cmd
-	read -r
+	read -es -n1
 	return 0
   fi
 
@@ -503,8 +503,8 @@ cmdPlay()
 
   CMD="$cmd $parameters"
   eval $CMD
-  read -r
 
+  read -es -n1
   return 0
 }
 
@@ -601,7 +601,7 @@ Broswer()
 	  then
 		echo -e "\033[1;31mout of range !\033[0m"
 		echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
-		read -r
+		read -es -n1 -t3
 	  else
 		filename=$(sed -n ${input}p $filelist)
 		[ -d "$filename" ] && cd "$filename" && showList || Play
@@ -633,7 +633,7 @@ Broswer()
 	  prepath="$markpath"
 	  markpath="$PWD"
 	  echo -e "\033[1;37mthis directory has been marked !\033[0m"
-	  read -r
+	  read -es -n1 -t3
 	elif [ "$input" = "g" ] || [ "$input" = "goto" ] 
 	then
 	  if [ "$markpath" != "" ];then
@@ -642,7 +642,7 @@ Broswer()
 		showList
 	  else
 		echo -e "\033[1;31mno directory is marked !\033[0m"
-		read -r
+		read -es -n1 -t3
 	  fi
 	elif [ "$input" = "a" ] || [ "$input" = "all" ] 
 	then
@@ -699,7 +699,7 @@ Broswer()
 	  cmdPlay && showList
 	#else
 	  #echo -e "\033[1;31munknown command !\033[0m"
-	  #read -r
+	  #read -es -n1 -t3
 	fi
   done
 }
