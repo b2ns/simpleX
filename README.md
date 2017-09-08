@@ -57,7 +57,7 @@ type simplex to launch it.
     3.default App is used to open a file
     4.after inputting 'a' or 'll' to show hidden file and detail,you can input it again to hide
     5.space and blank is not allowed while you name a file
-    6.you can list files match certain patter by using 'find',and deal with them all by using '*' afterwards such as del *, copy *,pack name *
+    6.you can list files match certain patter by using 'se',and deal with them all by using '*' afterwards such as del *, copy *,pack name *
     7.only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip
     8.all common commands under terminal are supported,you can use them as long as you like;Besides,while dealing with files,you can use a index starting with letter 'n'(e.g. n1,n23,n456) to represent a certen file,for example: 
         if there is a file named 'main.js' and the index of it is 23,you can do anything like :
