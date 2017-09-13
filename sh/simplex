@@ -514,8 +514,8 @@ Shortcut()
   echo " use index(.e.g 1,2,3,4) to select a item"
   echo " 'help'                       show help"
   echo " 'shortcut'                   show shortcut"
-  echo " '..' or 'up'                 go upper directory"
-  echo " '-' or 'back'                go back"
+  echo " '..' or 'u'                  go upper directory"
+  echo " '-' or 'b'                   go back"
   echo " '.' or 'r'                   refresh screen"
   echo " '~' or 'home'                go home"
   echo " '/' or 'root'                go root"
@@ -609,11 +609,11 @@ Broswer()
 	elif [ "$input" = "" ] 
 	then
 	  continue
-	elif [ "$input" = ".." ] || [ "$input" = "up" ]
+	elif [ "$input" = ".." ] || [ "$input" = "u" ]
 	then
 	  cd ..
 	  showList
-	elif [ "$input" = "-" ] || [ "$input" = "back" ]
+	elif [ "$input" = "-" ] || [ "$input" = "b" ]
 	then
 	  cd -
 	  showList

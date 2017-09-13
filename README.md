@@ -8,8 +8,8 @@ type simplex to launch it.
      use index(.e.g 1,2,3,4) to select a item
      'help'                       show help
      'shortcut'                   show shortcut
-     '..' or 'up'                 go upper directory
-     '-' or 'back'                go back
+     '..' or 'u'                  go upper directory
+     '-' or 'b'                   go back
      '.' or 'r'                   refresh screen
      '~' or 'home'                go home
      '/' or 'root'                go root
