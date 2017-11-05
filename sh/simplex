@@ -694,6 +694,26 @@ Browser()
 	elif [ "$cmd" = "unpack" ] 
 	then
 	  Unpack && showList
+	elif [ "$cmd" = "gs" ] 
+	then
+	  git status
+	  read -es -n1
+	elif [ "$cmd" = "ga" ] 
+	then
+	  git add .
+	elif [ "$cmd" = "gc" ] 
+	then
+	  git commit -m "$parameters"
+	elif [ "$cmd" = "gp" ] 
+	then
+	  git push origin master
+	  read -es -n1
+	elif [ "$cmd" = "gg" ] 
+	then
+	  git add .
+	  git commit -m "$parameters"
+	  git push origin master
+	  read -es -n1
 	else
 	  cmdPlay && showList
 	#else
