@@ -1,8 +1,8 @@
 # simpleX
-## **a simple file explorer using index to browse under terminal**
+## a simple file explorer using index to browse under terminal
 ![](https://github.com/b2ns/simpleX/blob/master/demo.gif)
 ## install
-just copy the shell script to ~/bin/ or anywhere else that has been added to $PATH<br>
+just copy the shell script to ~/bin/ or anywhere else that has been added to $PATH  
 type simplex to launch it.
 ### shortcut
      use index(.e.g 1,2,3,4) to select a item:
@@ -15,23 +15,23 @@ type simplex to launch it.
      'g' or 'goto'                goto the marked directory
      'a' or 'all'                 show hidden files
      'll'                         show detail
-     'mkfile'                     make empty files
-              mkfile name1 name2 ...
-     'mkdir'                      make directories
-              mkdir name1 name2 ...
-     'mklink'                     make soft link
-              mklink index1 index2 ... or mklink * 
+     'mkf'                        make empty files
+              mkfname1 name2 ...
+     'mkd'                        make directories
+              mkdname1 name2 ...
+     'mkl'                        make soft link
+              mklindex1 index2 ... or mklink * 
      'del'                        delete
               del index1 index2 ... or del * 
-     'copy'                       copy to clipboard
-              copy index1 index2 ... or copy * 
-     'cut'                        cut to clipboard
-              cut index1 index2 ... or cut * 
+     'co' or 'copy'               copy to clipboard
+              co index1 index2 ... or copy * 
+     'cu' or 'cut'                cut to clipboard
+              cu index1 index2 ... or cut * 
      'p' or 'paste'               paste
      'rn'                         rename
               rn index1 name1 index2 name2 ...
-     'se'                         search
-              se patten
+     'se' or 'fi'                 search
+              se pattern
      'pack'                       compress
               pack name index1 index2 ... or pack name * 
      'unpack'                     decompress
@@ -63,7 +63,7 @@ type simplex to launch it.
                   cp main.js hello.js or cp 23 hello.js
                   rm -rf 23
                   tar -zcvf main.tar.gz 23
-		belowe can't be done because simpleX can't tell index from normal numbers:
+        belowe can not be done because simpleX can't tell index from normal numbers:
                   chmod 640 23
                   echo {"name": "simpleX","array": [1,2,3]} > 23
                   cat 23 | grep -E '[0-9]+'

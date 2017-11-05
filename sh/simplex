@@ -40,8 +40,6 @@ showList()
 {
   clear
   [ "$PWD" = "$markpath" ] && echo -e "\033[1;36mmarked directory\033[0m"
-  #echo -e "\033[1;35msimpleX\033[0m"
-  #echo -e "\033[1;30m**************************************\033[0m"
 
   if [ -s "$findlist" ];then
 	cp $findlist $filelist
@@ -89,10 +87,6 @@ showList()
 
   #more -d $morelist
   #:> $morelist
-
-  echo
-  #echo -e "\033[1;30m**************************************\033[0m"
-  #echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
 }
 
 isNumber()
@@ -144,22 +138,6 @@ selectAll()
   fi
   return 1
 }
-
-#isCmd()
-#{
-  #path=$PATH
-  #while : ;do
-	#dir=${path%%:*}
-	#tmp=""
-	#tmp=$(find "$dir" -name "$1" 2>/dev/null)
-	#if [ "$tmp" != "" ];then
-	  #return 0
-	#fi
-	#path=${path#*:}
-	#[ "$dir" = "$path" ] && break
-  #done
-  #return 1
-#}
 
 Mkfile()
 {
@@ -605,28 +583,28 @@ Browser()
 	then
 	  clear
 	  break
-	elif [ "$cmd" = "mkfile" ] 
+	elif [ "$cmd" = "mkf" ] 
 	then
 	  Mkfile && showList
-	elif [ "$cmd" = "mkdir" ] 
+	elif [ "$cmd" = "mkd" ] 
 	then
 	  Mkdir && showList
-	elif [ "$cmd" = "mklink" ] 
+	elif [ "$cmd" = "mkl" ] 
 	then
 	  Mklink && showList
 	elif [ "$cmd" = "del" ]
 	then
 	  Delete && showList
-	elif [ "$cmd" = "copy" ] # || [ "$cmd" = "cp" ] 
+	elif [ "$cmd" = "co" ] || [ "$cmd" = "copy" ] 
 	then
 	  CopyCut "copy"
-	elif [ "$cmd" = "cut" ] 
+	elif [ "$cmd" = "cu" ] || [ "$cmd" = "cut" ]
 	then
 	  CopyCut "cut"
-	elif [ "$cmd" = "rn" ] # || [ "$cmd" = "rename" ] 
+	elif [ "$cmd" = "rn" ]
 	then
 	  Rename && showList
-	elif [ "$cmd" = "se" ]  #|| [ "$cmd" = "search" ]
+	elif [ "$cmd" = "se" ] || [ "$cmd" = "fi" ]
 	then
 	  Search && showList
 	elif [ "$cmd" = "pack" ] 
