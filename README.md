@@ -6,8 +6,6 @@ just copy the shell script to ~/bin/ or anywhere else that has been added to $PA
 type simplex to launch it.
 ### shortcut
      use index(.e.g 1,2,3,4) to select a item
-     'help'                       show help
-     'shortcut'                   show shortcut
      '..' or 'u'                  go upper directory
      '-' or 'b'                   go back
      '.' or 'r'                   refresh screen
@@ -49,6 +47,12 @@ type simplex to launch it.
               unpack index1 index2 ... or unpack * 
 
      'q' or 'quit' or 'exit'      exit simpleX
+
+     'gs'                         git status
+     'ga'                         git add
+     'gc'                         git commit -m
+     'gp'                         git push origin master
+     'gg'                         do all the stuff above in one word
     
 ### help
     1.the initial path will be the current path,you can start with other path by doing :

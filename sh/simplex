@@ -508,80 +508,6 @@ cmdPlay()
   return 0
 }
 
-Shortcut()
-{
-  echo -e "\033[1;33mSHORTCUT:\033[0m"
-  echo " use index(.e.g 1,2,3,4) to select a item"
-  echo " 'help'                       show help"
-  echo " 'shortcut'                   show shortcut"
-  echo " '..' or 'u'                  go upper directory"
-  echo " '-' or 'b'                   go back"
-  echo " '.' or 'r'                   refresh screen"
-  echo " '~' or 'home'                go home"
-  echo " '/' or 'root'                go root"
-  echo " 'm' or 'mark'                mark a directory"
-  echo " 'g' or 'goto'                goto the marked directory"
-  echo " 'a' or 'all'                 show hidden files"
-  echo " 'll'                         show detail"
-  echo " 'mkfile'                     make empty files"
-  echo "          mkfile name1 name2 ..."
-  echo 
-  echo " 'mkdir'                      make directories"
-  echo "          mkdir name1 name2 ..."
-  echo 
-  echo " 'mklink'                     make soft link"
-  echo "          mklink index1 index2 ... or mklink * "
-  echo 
-  echo " 'del'                        delete"
-  echo "          del index1 index2 ... or del * "
-  echo 
-  echo " 'copy'                       copy to clipboard"
-  echo "          copy index1 index2 ... or copy * "
-  echo 
-  echo " 'cut'                        cut to clipboard"
-  echo "          cut index1 index2 ... or cut * "
-  echo 
-  echo " 'p' or 'paste'               paste"
-  echo " 'rn'                         rename"
-  echo "          rn index1 name1 index2 name2 ..."
-  echo 
-  echo " 'se'                         search"
-  echo "          se patten"
-  echo 
-  echo " 'pack'                       compress"
-  echo "          pack name index1 index2 ... or pack name * "
-  echo 
-  echo " 'unpack'                     decompress"
-  echo "          unpack index1 index2 ... or unpack * "
-  echo 
-  echo " 'q' or 'quit' or 'exit'      exit simpleX"
-  return 0
-}
-
-Help()
-{
-  echo -e "\033[1;33mHELP:\033[0m"
-  echo "1.the initial path will be the current path,you can start with other path by doing :"
-  echo "          simplex path"
-  echo "2.you must use index(e.g. 2,45,998,142857) instead of file's name to select a file"
-  echo "3.default App is used to open a file"
-  echo "4.after inputting 'a' or 'll' to show hidden file and detail,you can input it again to hide"
-  echo "5.space and blank is not allowed while you name a file"
-  echo "6.you can list files match certain patter by using 'find',and deal with them all by using '*' afterwards such as del *, copy *,pack name *"
-  echo "7.only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip"
-  echo "8.all common commands under terminal are supported,you can use them as long as you like;Besides,while dealing with files,you can use a index starting with letter 'n'(e.g. n1,n23,n456) to represent a certen file,for example: "
-  echo "    if there is a file named 'main.js' and the index of it is 23,you can do anything like :"
-  echo "          vim main.js or vim n23"
-  echo "          ls -l main.js or ls -l n23"
-  echo "          cp main.js hello.js or cp n23 hello.js"
-  echo "          rm -rf n23"
-  echo "          chmod 640 n23"
-  echo '          echo {"name": "simpleX","array": [1,2,3]} > n23'
-  echo "          cat n23 | grep -E '[0-9]+'"
-  echo "          tar -zcvf main.tar.gz n23"
-  return 0
-}
-
 Browser()
 {
   showList
@@ -654,12 +580,6 @@ Browser()
 	elif [ "$input" = "p" ] || [ "$input" = "paste" ] 
 	then
 	  Paste && showList
-	elif [ "$input" = "help" ] 
-	then
-	  Help
-	elif [ "$input" = "shortcut" ] 
-	then
-	  Shortcut
 	elif [ "$input" = "q" ] || [ "$input" = "quit" ] || [ "$input" = "exit" ] 
 	then
 	  clear
