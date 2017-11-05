@@ -16,11 +16,11 @@ type simplex to launch it.
      'a' or 'all'                 show hidden files
      'll'                         show detail
      'mkf'                        make empty files
-              mkfname1 name2 ...
+              mkf name1 name2 ...
      'mkd'                        make directories
-              mkdname1 name2 ...
+              mkd name1 name2 ...
      'mkl'                        make soft link
-              mklindex1 index2 ... or mklink * 
+              mkl index1 index2 ... or mklink * 
      'del'                        delete
               del index1 index2 ... or del * 
      'co' or 'copy'               copy to clipboard
@@ -38,13 +38,14 @@ type simplex to launch it.
               unpack index1 index2 ... or unpack * 
      'q' or 'quit' or 'exit'      exit simpleX
 
-     custom snippets:
+     custom aliases:
      'gs'                         git status
      'ga'                         git add
      'gc'                         git commit -m
      'gp'                         git push origin master
      'gg'                         do all the stuff above in one word
      'v'                          gvim
+     'e'                          gedit
 
     
 ### help

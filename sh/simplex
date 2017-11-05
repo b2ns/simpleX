@@ -473,29 +473,9 @@ cmdPlay()
 	  return 1
 	fi
   done
-#Custom snippets
-	if [ "$cmd" = "v" ] 
-	then
-	  gvim $parameters
-	elif [ "$cmd" = "gs" ] 
-	then
-	  git status
-	elif [ "$cmd" = "ga" ] 
-	then
-	  git add .
-	elif [ "$cmd" = "gc" ] 
-	then
-	  git commit -m "$parameters"
-	elif [ "$cmd" = "gp" ] 
-	then
-	  git push origin master
-	elif [ "$cmd" = "gg" ] 
-	then
-	  git add .
-	  git commit -m "$parameters"
-	  git push origin master
 
-#Custom snippets
+  if Alias;then
+	echo
   elif [ "$cmd" = "$parameters" ];then
 	$cmd
   else
@@ -617,6 +597,49 @@ Browser()
 	  cmdPlay && showList
 	fi
   done
+}
+
+Alias(){
+#Custom aliases
+  if [ "$cmd" = "v" ];then
+	gvim $parameters
+	return 0
+  fi
+
+  if [ "$cmd" = "e" ];then
+	gedit $parameters
+	return 0
+  fi
+
+  if [ "$cmd" = "gs" ];then
+	git status
+	return 0
+  fi
+
+  if [ "$cmd" = "ga" ];then
+	git add .
+	return 0
+  fi
+
+  if [ "$cmd" = "gc" ];then
+	git commit -m "$parameters"
+	return 0
+  fi
+
+  if [ "$cmd" = "gp" ];then
+	git push origin master
+	return 0
+  fi
+
+  if [ "$cmd" = "gg" ];then
+	git add .
+	git commit -m "$parameters"
+	git push origin master
+	return 0
+  fi
+
+  return -1
+#Custom aliases
 }
 
 #main function
