@@ -60,8 +60,6 @@ showList()
 
   linecount=$(sed -n '$=' $filelist)
 
-  echo
-
   index=1
   if [ "$detail" = "false" ];then
 	while read name
@@ -87,6 +85,7 @@ showList()
 
   #more -d $morelist
   #:> $morelist
+  echo
 }
 
 isNumber()
@@ -494,7 +493,7 @@ Browser()
   while :
   do
 	#echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
-	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$ \c"
+	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$"
 	read -e -p "> " input
 	cmd=${input%% *}
 	parameters=${input#* }
