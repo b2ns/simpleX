@@ -40,12 +40,12 @@ type simplex to launch it.
 
      custom aliases:
      'gs'                         git status
-     'ga'                         git add
+     'gd'                         git diff
+     'ga'                         git add .
      'gc'                         git commit -m
      'gp'                         git push origin master
-     'gg'                         do all the stuff above in one word
+     'gg'                         do all the stuff(ga gc gp) above in one word
      'v'                          gvim
-     'e'                          gedit
 
     
 ### help
