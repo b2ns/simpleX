@@ -605,13 +605,13 @@ Alias(){
 	return 0
   fi
 
-  if [ "$cmd" = "e" ];then
-	gedit $parameters
+  if [ "$cmd" = "gs" ];then
+	git status
 	return 0
   fi
 
-  if [ "$cmd" = "gs" ];then
-	git status
+  if [ "$cmd" = "gd" ];then
+	git diff "$parameters"
 	return 0
   fi
 
