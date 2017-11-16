@@ -543,7 +543,7 @@ Browser()
 	  prepath="$markpath"
 	  markpath="$PWD"
 	  echo -e "\033[1;37mthis directory has been marked !\033[0m"
-	  read -es -n1 -t1
+	  # read -es -n1 -t1
 	elif [ "$cmd" = "g" ] || [ "$cmd" = "goto" ] 
 	then
 	  if [ "$markpath" != "" ];then
@@ -552,7 +552,7 @@ Browser()
 		showList
 	  else
 		echo -e "\033[1;31mno directory is marked !\033[0m"
-		read -es -n1 -t1
+		# read -es -n1 -t1
 	  fi
 	elif [ "$cmd" = "a" ] || [ "$cmd" = "all" ] 
 	then
