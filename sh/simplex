@@ -25,6 +25,7 @@ markpath=""
 
 cmd=""
 parameters=""
+lastInput=""
 
 filelist=/tmp/simplex.filelist.$$
 detaillist=/tmp/simplex.detaillist.$$
@@ -495,49 +496,55 @@ Browser()
 	#echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
 	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$"
 	read -e -p "> " input
+	if [ "$input" = "" ];then
+	  input=$lastInput
+	else
+	  lastInput=$input
+	fi
+
 	cmd=${input%% *}
 	parameters=${input#* }
 
-	if isNumber "$input"
+	if isNumber "$cmd"
 	then
-	  if [ "$input" -gt "$linecount" ] || [ "$input" -le "0" ]
+	  if [ "$cmd" -gt "$linecount" ] || [ "$cmd" -le "0" ]
 	  then
 		echo -e "\033[1;31mout of range !\033[0m"
 		echo -e "\033[1;31mplease use index between 1~$linecount !\033[0m"
 		read -es -n1 -t1
 	  else
-		filename=$(sed -n ${input}p $filelist)
+		filename=$(sed -n ${cmd}p $filelist)
 		[ -d "$filename" ] && cd "$filename" && showList || Play
 	  fi
-	elif [ "$input" = "" ] 
+	elif [ "$cmd" = "" ] 
 	then
 	  continue
-	elif [ "$input" = ".." ] || [ "$input" = "u" ]
+	elif [ "$cmd" = ".." ] || [ "$cmd" = "u" ]
 	then
 	  cd ..
 	  showList
-	elif [ "$input" = "-" ] || [ "$input" = "b" ]
+	elif [ "$cmd" = "-" ] || [ "$cmd" = "b" ]
 	then
 	  cd -
 	  showList
-	elif [ "$input" = "." ] || [ "$input" = "r" ]
+	elif [ "$cmd" = "." ] || [ "$cmd" = "r" ]
 	then
 	  showList
-	elif [ "$input" = "/" ] || [ "$input" = "root" ] 
+	elif [ "$cmd" = "/" ] || [ "$cmd" = "root" ] 
 	then
 	  cd /
 	  showList
-	elif [ "$input" = "~" ] || [ "$input" = "home" ] 
+	elif [ "$cmd" = "~" ] || [ "$cmd" = "home" ] 
 	then
 	  cd ~
 	  showList
-	elif [ "$input" = "m" ] || [ "$input" = "mark" ] 
+	elif [ "$cmd" = "m" ] || [ "$cmd" = "mark" ] 
 	then
 	  prepath="$markpath"
 	  markpath="$PWD"
 	  echo -e "\033[1;37mthis directory has been marked !\033[0m"
 	  read -es -n1 -t1
-	elif [ "$input" = "g" ] || [ "$input" = "goto" ] 
+	elif [ "$cmd" = "g" ] || [ "$cmd" = "goto" ] 
 	then
 	  if [ "$markpath" != "" ];then
 		#[ "$PWD" != "$markpath" ] && prepath="$PWD" && cd "$markpath" || cd $prepath
@@ -547,18 +554,18 @@ Browser()
 		echo -e "\033[1;31mno directory is marked !\033[0m"
 		read -es -n1 -t1
 	  fi
-	elif [ "$input" = "a" ] || [ "$input" = "all" ] 
+	elif [ "$cmd" = "a" ] || [ "$cmd" = "all" ] 
 	then
 	  [ "$hidden" = "true" ] && hidden=false || hidden=true
 	  showList
-	elif [ "$input" = "ll" ]
+	elif [ "$cmd" = "ll" ]
 	then
 	  [ "$detail" = "true" ] && detail=false || detail=true
 	  showList
-	elif [ "$input" = "p" ] || [ "$input" = "paste" ] 
+	elif [ "$cmd" = "p" ] || [ "$cmd" = "paste" ] 
 	then
 	  Paste && showList
-	elif [ "$input" = "q" ] || [ "$input" = "quit" ] || [ "$input" = "exit" ] 
+	elif [ "$cmd" = "q" ] || [ "$cmd" = "quit" ] || [ "$cmd" = "exit" ] 
 	then
 	  clear
 	  break
