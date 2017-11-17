@@ -41,7 +41,8 @@ type simplex to launch it.
      custom aliases:
      'gs'                         git status
      'gd'                         git diff
-     'ga'                         git add .
+     'ga'                         git add
+     'ga.'                        git add .
      'gc'                         git commit -m
      'gp'                         git push origin master
      'gg'                         do all the stuff(ga gc gp) above in one word

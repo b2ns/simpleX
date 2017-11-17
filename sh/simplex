@@ -495,7 +495,7 @@ Browser()
   do
 	#echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
 	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$"
-	echo -e "$lastInput"
+	echo -e "  $lastInput"
 	read -e -p "> " input
 	if [ "$input" = "" ];then
 	  input=$lastInput
@@ -624,6 +624,11 @@ Alias(){
   fi
 
   if [ "$cmd" = "ga" ];then
+	git add "$parameters"
+	return 0
+  fi
+
+  if [ "$cmd" = "ga." ];then
 	git add .
 	return 0
   fi
