@@ -647,6 +647,15 @@ Alias(){
   fi
 
   if [ "$cmd" = "gg" ];then
+	if [ "$parameters" = "gg" ];then
+	  parameters="null"
+	fi
+	git commit -m "$parameters"
+	git push origin master
+	return 0
+  fi
+
+  if [ "$cmd" = "ggg" ];then
 	git add .
 	if [ "$parameters" = "gg" ];then
 	  parameters="null"
