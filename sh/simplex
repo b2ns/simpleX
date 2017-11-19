@@ -296,7 +296,7 @@ Paste()
 
 	if ! [ -e "$copyname" ] || ([ "$choich" != "i" ] && [ "$ignore" != "true" ]);then
 	  if [ "$copycut" = "copy" ];then
-		cp "$pastepath/$filename" "./$copyname"
+		cp -R "$pastepath/$filename" "./$copyname"
 	  else
 		mv "$pastepath/$filename" "./$copyname"
 	  fi
