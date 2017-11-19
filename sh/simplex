@@ -25,7 +25,7 @@ markpath=""
 
 cmd=""
 parameters=""
-# lastInput=""
+lastInput=""
 
 filelist=/tmp/simplex.filelist.$$
 detaillist=/tmp/simplex.detaillist.$$
@@ -495,13 +495,14 @@ Browser()
   do
 	#echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
 	echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$"
-	# echo -e "  $lastInput"
-	 read -e -p "> " input
-	# if [ "$input" = "" ];then
-	  # input=$lastInput
-	# else
-	  # lastInput=$input
-	# fi
+	echo -e "press h to exec: $lastInput"
+	read -e -p "> " input
+
+	if [ "$input" = "h" ];then
+	  input=$lastInput
+	else
+	  lastInput=$input
+	fi
 
 	cmd=${input%% *}
 	parameters=${input#* }
@@ -628,11 +629,6 @@ Alias(){
 	return 0
   fi
 
-  if [ "$cmd" = "ga." ];then
-	git add .
-	return 0
-  fi
-
   if [ "$cmd" = "gc" ];then
 	if [ "$parameters" = "gc" ];then
 	  parameters="null"
@@ -647,15 +643,6 @@ Alias(){
   fi
 
   if [ "$cmd" = "gg" ];then
-	if [ "$parameters" = "gg" ];then
-	  parameters="null"
-	fi
-	git commit -m "$parameters"
-	git push origin master
-	return 0
-  fi
-
-  if [ "$cmd" = "ggg" ];then
 	git add .
 	if [ "$parameters" = "gg" ];then
 	  parameters="null"
