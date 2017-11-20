@@ -5,7 +5,7 @@
 cdg=cd /home/ding/Code/Git;
 cdt=cd /home/ding/tmp;
 
-/* vim */
+/* editor */
 v=gvim $parameters;
 e=gedit $parmeters;
 
