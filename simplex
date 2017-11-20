@@ -39,6 +39,7 @@ filelist=/tmp/simplex.filelist.$$
 detaillist=/tmp/simplex.detaillist.$$
 clipboardlist=/tmp/simplex.clipboardlist.$$
 findlist=/tmp/simplex.findlist.$$
+morelist=/tmp/simplex.morelist.$$
 
 aliaslist=${basepath}/alias/simplex.alias
 aliasarr=""
@@ -51,9 +52,8 @@ do
   fi
 done < $aliaslist
 
-#morelist=/tmp/simplex.morelist.$$
-#trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
-trap 'rm -f $filelist $detaillist $clipboardlist $findlist' EXIT
+trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
+# trap 'rm -f $filelist $detaillist $clipboardlist $findlist' EXIT
 
 #define function
 showList()
@@ -85,26 +85,32 @@ showList()
     while read name
     do
       if [ -L "$name" ];then
-        echo -e "[\033[1;32m$index\033[0m] \033[1;36m$name\033[0m" #>> $morelist
+        echo -e "[\033[1;32m$index\033[0m] \033[1;36m$name\033[0m" >> $morelist
       elif [ -d "$name" ];then
-        echo -e "[\033[1;32m$index\033[0m] \033[1;34m$name\033[0m" #>> $morelist
+        echo -e "[\033[1;32m$index\033[0m] \033[1;34m$name\033[0m" >> $morelist
       elif [ -x "$name" ];then
-        echo -e "[\033[1;32m$index\033[0m] \033[1;32m$name\033[0m" #>> $morelist
+        echo -e "[\033[1;32m$index\033[0m] \033[1;32m$name\033[0m" >> $morelist
       else
-        echo -e "[\033[1;32m$index\033[0m] \033[0m$name\033[0m" #>> $morelist
+        echo -e "[\033[1;32m$index\033[0m] \033[0m$name\033[0m" >> $morelist
       fi
       index=$((index+1))
     done < $filelist
   else
     while read name
     do
-      echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" #>> $morelist
+      echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" >> $morelist
       index=$((index+1))
     done < $detaillist
   fi
 
-  #more -d $morelist
-  #:> $morelist
+  # when too much files,use more to display
+  if [ $linecount -gt 250 ];then
+    more -d $morelist
+  else
+    cat $morelist
+  fi
+  :> $morelist
+
   echo
 }
 
@@ -496,20 +502,22 @@ Alias(){
 
 cmdPlay()
 {
-  #prefix="n"
+  prefix="n"
   #filenum=$(echo $parameters | grep -o "$prefix[0-9]\{1,\}")
-  filenum=$(echo $parameters | grep -o "[0-9]\{1,\}")
+  filenum=$(echo $parameters | grep -o "\b[0-9]\{1,\}\b")
+  echo $filenum
   for num in $filenum
   do
     #num=${num#?}
     if numCheck $num;then
       filename=$(sed -n ${num}p $filelist)
       #parameters=$(echo $parameters | sed "s/$prefix[0-9]\{1,\}/$filename/")
-      parameters=$(echo $parameters | sed "s/[0-9]\{1,\}/$filename/")
+      parameters=$(echo $parameters | sed "s/\b[0-9]\{1,\}\b/$filename/")
     else
       return 1
     fi
   done
+  parameters=$(echo $parameters | sed "s/\b${prefix}\([0-9]\{1,\}\)\b/\1/g")
 
   if Alias;then
     echo
