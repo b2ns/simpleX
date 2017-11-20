@@ -10,13 +10,13 @@
 [ "$#" != "0" ] && cd "$1" || cd $PWD
 
 #declare global variable and temp file
-basepath=`readlink $0`
-if [ "$basepath" = "" ];then
-  basepath=${PWD}/$0
-  basepath=`dirname $basepath`
+if [ -L "$0" ];then
+  tmp=`ls -l $0`
+  basepath=${tmp#*> }
 else
-  basepath=`dirname $basepath`
+  basepath=${PWD}/$0
 fi
+basepath=${basepath%/*}
 
 linecount=""
 
@@ -482,7 +482,7 @@ Unpack()
 
 Play()
 {
-  ./"$filename" 2> /dev/null || xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
+  xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
   read -es -n1 -t1 
 }
 #Custom aliases
@@ -494,6 +494,9 @@ Alias(){
     code=${line#*=}
     if [ "$cmd" = "$alias" ];then
       eval $code
+      if [[ "$code" = *\; ]];then
+        read -es -n1
+      fi
       return 0
     fi
   done
@@ -516,18 +519,23 @@ cmdPlay()
       return 1
     fi
   done
+  # delete prefix before normal number
   parameters=$(echo $parameters | sed "s/\b${prefix}\([0-9]\{1,\}\)\b/\1/g")
 
   if Alias;then
     tmp=1
   elif [ "$cmd" = "$parameters" ];then
+    cmd=${cmd%;}
     $cmd
   else
-    CMD="$cmd $parameters"
-    eval $CMD
+    cmd="$cmd $parameters"
+    eval $cmd
   fi
 
-  read -es -n1
+  # if input end with ';' show result,otherwise refresh the screen
+  if [[ "$input" = *\; ]];then
+    read -es -n1
+  fi
   return 0
 }
 
@@ -544,7 +552,7 @@ Browser()
 
     if [ "$input" = "h" ];then
       input=$lastInput
-    else
+    elif [ "$input" != "" ];then
       lastInput=$input
     fi
 

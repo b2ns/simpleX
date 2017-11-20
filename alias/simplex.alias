@@ -1,18 +1,20 @@
 // every alias must be in one line!
 // $parameters for parameters you may put in
+// if you want to see the running result, put ';' at the end of the line
 
 /* cd */
-cdg=cd /home/ding/Code/Git;
-cdt=cd /home/ding/tmp;
+cdg=cd /home/ding/Code/Git
+cdt=cd /home/ding/tmp
+cdw=cd /home/ding/w3c
 
 /* editor */
-v=gvim $parameters;
-e=gedit $parmeters;
+v=gvim $parameters
+e=gedit $parameters
 
 /* git */
 gs=git status;
 gd=git diff $parameters;
-ga=git add $parameters;
+ga=git add $parameters;git status;
 gc=git commit -m "$parameters";
 gp=git push origin master;
 gg=git add .;git commit -m "$parameters";git push origin master;

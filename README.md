@@ -21,7 +21,7 @@ use index(.e.g 1,2,3,4) to select a item:
 'mkd'                        make directories
          mkd name1 name2 ...
 'mkl'                        make soft link
-         mkl index1 index2 ... or mklink * 
+         mkl index1 index2 ... or mkl * 
 'del'                        delete
          del index1 index2 ... or del * 
 'co' or 'copy'               copy to clipboard
@@ -41,13 +41,12 @@ use index(.e.g 1,2,3,4) to select a item:
 ```
 ### help
 * the initial path will be the current path,you can start with other path by doing :  
-             simplex path
+  simplex path
 * you can custom your own **alias** in simplex.alias
 * default App is used to open a file
 * after inputting 'a' or 'll' to show hidden file and detail,you can input it again to hide
 * you can list files match certain pattern by using 'se',and deal with them all by using '*' afterwards such as del *, copy *,pack name *
 * space and blank is not allowed while you name a file
-* only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip
 * all common commands under terminal are supported,you can use them as long as you like;Besides,while dealing with files,you can use index to represent a certen file,for example: 
 ```
 if there is a file named 'main.js' and the index of it is 23,you can do anything like :  
