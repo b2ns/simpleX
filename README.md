@@ -38,7 +38,7 @@ type simplex to launch it.
               unpack index1 index2 ... or unpack * 
      'q' or 'quit' or 'exit'      exit simpleX
 
-     custom aliases:
+     custom alias:
      'gs'                         git status
      'gd'                         git diff
      'ga'                         git add
