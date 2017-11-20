@@ -505,7 +505,6 @@ cmdPlay()
   prefix="n"
   #filenum=$(echo $parameters | grep -o "$prefix[0-9]\{1,\}")
   filenum=$(echo $parameters | grep -o "\b[0-9]\{1,\}\b")
-  echo $filenum
   for num in $filenum
   do
     #num=${num#?}
@@ -520,7 +519,7 @@ cmdPlay()
   parameters=$(echo $parameters | sed "s/\b${prefix}\([0-9]\{1,\}\)\b/\1/g")
 
   if Alias;then
-    echo
+    tmp=1
   elif [ "$cmd" = "$parameters" ];then
     $cmd
   else
