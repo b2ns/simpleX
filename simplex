@@ -487,10 +487,11 @@ Alias(){
     alias=${line%%=*}
     code=${line#*=}
     if [ "$cmd" = "$alias" ];then
-      eval "$code"
+      eval $code
       return 0
     fi
   done
+  return 1
 }
 
 cmdPlay()
