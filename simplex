@@ -33,7 +33,7 @@ prepath=""
 
 cmd=""
 parameters=""
-lastInput=""
+lastinput=""
 
 filelist=/tmp/simplex.filelist.$$
 detaillist=/tmp/simplex.detaillist.$$
@@ -52,8 +52,8 @@ do
   fi
 done < $aliaslist
 
+# delete tmp files after EXIT
 trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
-# trap 'rm -f $filelist $detaillist $clipboardlist $findlist' EXIT
 
 #define function
 showList()
@@ -79,37 +79,59 @@ showList()
   fi
 
   linecount=$(sed -n '$=' $filelist)
+  if [ "$linecount" = "" ];then
+    linecount=0
+  fi
 
   index=1
-  if [ "$detail" = "false" ];then
-    while read name
-    do
-      if [ -L "$name" ];then
-        echo -e "[\033[1;32m$index\033[0m] \033[1;36m$name\033[0m" >> $morelist
-      elif [ -d "$name" ];then
-        echo -e "[\033[1;32m$index\033[0m] \033[1;34m$name\033[0m" >> $morelist
-      elif [ -x "$name" ];then
-        echo -e "[\033[1;32m$index\033[0m] \033[1;32m$name\033[0m" >> $morelist
-      else
-        echo -e "[\033[1;32m$index\033[0m] \033[0m$name\033[0m" >> $morelist
-      fi
-      index=$((index+1))
-    done < $filelist
-  else
-    while read name
-    do
-      echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" >> $morelist
-      index=$((index+1))
-    done < $detaillist
-  fi
-
   # when too much files,use more to display
-  if [ $linecount -gt 250 ];then
+  if [ "$linecount" -gt "250" ];then
+    if [ "$detail" = "false" ];then
+      while read name
+      do
+        if [ -L "$name" ];then
+          echo -e "[\033[1;37m$index\033[0m] \033[1;36m$name\033[0m" >> $morelist
+        elif [ -d "$name" ];then
+          echo -e "[\033[1;37m$index\033[0m] \033[1;34m$name\033[0m" >> $morelist
+        elif [ -x "$name" ];then
+          echo -e "[\033[1;37m$index\033[0m] \033[1;32m$name\033[0m" >> $morelist
+        else
+          echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" >> $morelist
+        fi
+        index=$((index+1))
+      done < $filelist
+    else
+      while read name
+      do
+        echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" >> $morelist
+        index=$((index+1))
+      done < $detaillist
+    fi
     more -d $morelist
+    :> $morelist
   else
-    cat $morelist
+    if [ "$detail" = "false" ];then
+      while read name
+      do
+        if [ -L "$name" ];then
+          echo -e "[\033[1;37m$index\033[0m] \033[1;36m$name\033[0m" #>> $morelist
+        elif [ -d "$name" ];then
+          echo -e "[\033[1;37m$index\033[0m] \033[1;34m$name\033[0m" #>> $morelist
+        elif [ -x "$name" ];then
+          echo -e "[\033[1;37m$index\033[0m] \033[1;32m$name\033[0m" #>> $morelist
+        else
+          echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" #>> $morelist
+        fi
+        index=$((index+1))
+      done < $filelist
+    else
+      while read name
+      do
+        echo -e "[\033[1;37m$index\033[0m] \033[0m$name\033[0m" #>> $morelist
+        index=$((index+1))
+      done < $detaillist
+    fi
   fi
-  :> $morelist
 
   echo
 }
@@ -505,6 +527,7 @@ Alias(){
 
 cmdPlay()
 {
+  # prefix to help telling index from normal number
   prefix="n"
   #filenum=$(echo $parameters | grep -o "$prefix[0-9]\{1,\}")
   filenum=$(echo $parameters | grep -o "\b[0-9]\{1,\}\b")
@@ -547,13 +570,13 @@ Browser()
   do
     #echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
     echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$"
-    echo -e "press h to exec: $lastInput"
+    echo -e "press . to repeate: $lastinput"
     read -e -p "> " input
 
-    if [ "$input" = "h" ];then
-      input=$lastInput
+    if [ "$input" = "." ];then
+      input=$lastinput
     elif [ "$input" != "" ];then
-      lastInput=$input
+      lastinput=$input
     fi
 
     cmd=${input%% *}
@@ -585,7 +608,7 @@ Browser()
     then
       cd -
       showList
-    elif [ "$cmd" = "." ] || [ "$cmd" = "r" ]
+    elif [ "$cmd" = "r" ]
     then
       showList
     elif [ "$cmd" = "/" ] || [ "$cmd" = "root" ] 

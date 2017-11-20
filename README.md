@@ -9,11 +9,12 @@ type simplex to launch it.
 use index(.e.g 1,2,3,4) to select a item:
 '..' or 'u'                  go upper directory
 '-' or 'b'                   go back
-'.' or 'r'                   refresh screen
+'r'                          refresh screen
+'.'                          repeate last action
 '~' or 'home'                go home
 '/' or 'root'                go root
 'm' or 'mark'                mark a directory
-'g' or 'goto'                goto the marked directory
+'g' or 'go'                  goto the marked directory
 'a' or 'all'                 show hidden files
 'll'                         show detail
 'mkf'                        make empty files
