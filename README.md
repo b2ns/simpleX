@@ -49,13 +49,13 @@ use index(.e.g 1,2,3,4) to select a item:
 * space and blank is not allowed while you name a file
 * only support *.tar.gz,*.tar.bz2,*.tar.xz and *.zip
 * all common commands under terminal are supported,you can use them as long as you like;Besides,while dealing with files,you can use index to represent a certen file,for example: 
-> if there is a file named 'main.js' and the index of it is 23,you can do anything like :
->> vim main.js or vim 23
->> ls -l main.js or ls -l 23
->> cp main.js hello.js or cp 23 hello.js
->>rm -rf 23
->>tar -zcvf main.tar.gz 23
->belowe can be done with a 'n' before number because simpleX can't tell index from normal numbers:
->> chmod n640 23
->> echo {"name": "simpleX","array": [n1,n2,n3]} > 23
->> cat 23 | grep -E '[n0-n9]+'
+> if there is a file named 'main.js' and the index of it is 23,you can do anything like :  
+>> vim main.js or vim 23  
+>> ls -l main.js or ls -l 23  
+>> cp main.js hello.js or cp 23 hello.js  
+>>rm -rf 23  
+>>tar -zcvf main.tar.gz 23  
+>belowe can be done with a 'n' before number because simpleX can't tell index from normal numbers:  
+>> chmod n640 23  
+>> echo {"name": "simpleX","array": [n1,n2,n3]} > 23  
+>> cat 23 | grep -E '[n0-n9]+'  
