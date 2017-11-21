@@ -43,12 +43,19 @@ morelist=/tmp/simplex.morelist.$$
 
 aliaslist=${basepath}/alias/simplex.alias
 aliasarr=""
+incomment=false
 i=0
 while read line
 do
-  if [[ "$line" != "" && "$line" != //* && "$line" != /\**\*/ ]];then
-    aliasarr[i]="$line"
-    i=$((i+1))
+  if [[ "$incomment" = false ]];then
+    if [[ "$line" = /\** ]];then
+      incomment=true
+    elif [[ "$line" != "" && "$line" != //* ]];then
+      aliasarr[i]="$line"
+      i=$((i+1))
+    fi
+  elif [[ "$line" = *\*/ ]];then
+    incomment=false
   fi
 done < $aliaslist
 
