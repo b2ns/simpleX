@@ -14,8 +14,11 @@ use index(.e.g 1,2,3,4) to select a item:
 '.number'   .1 .2 .3         repeate a certain action
 '~' or 'home'                go home
 '/' or 'root'                go root
-'m' or 'mark'                mark a directory
+'m' or 'mark'                mark current directory
 'g' or 'go'                  goto the marked directory
+'b' or 'bookmark'            add current directory to bookmark
+'bb'                         show all bookmarks
+'rmb'    rmb 1               remove bookmark
 'a' or 'all'                 show hidden files
 'll'                         show detail
 'mkf'                        make empty files

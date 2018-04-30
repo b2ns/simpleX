@@ -63,6 +63,10 @@ done < $aliaslist
 cmdhistory=""
 cmdhistorycount=1
 
+# get bookmark from simplex.bookmark
+bookmark=${basepath}/bookmark/simplex.bookmark
+showbookmark=false
+
 # delete tmp files after EXIT
 trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
 
@@ -77,6 +81,10 @@ showList()
     :>$findlist
     detail=false
     echo -e "\033[1;36msearch result:\033[0m"
+  elif [ "$showbookmark" = "true" ];then
+    cp $bookmark $filelist
+    showbookmark=false
+    echo -e "\033[1;36mbookmarks:\033[0m"
   elif [ "$hidden" = "false" ] && [ "$detail" = "false" ];then
     ls > $filelist
   elif [ "$hidden" = "true" ] && [ "$detail" = "true" ];then
@@ -572,6 +580,79 @@ cmdPlay()
   fi
   return 0
 }
+Mark()
+{
+  prepath="$markpath"
+  markpath="$PWD"
+  echo -e "\033[1;37mmarked !\033[0m"
+  read -es -n1 -t1
+}
+GotoMark()
+{
+  if [ "$markpath" != "" ];then
+    [ "$PWD" != "$markpath" ] && prepath="$PWD" && cd "$markpath" || cd $prepath
+    # cd "$markpath"
+    showList
+  else
+    echo -e "\033[1;31mno directory is marked !\033[0m"
+    read -es -n1 -t1
+  fi
+}
+
+Bookmark()
+{
+  echo "$PWD" >> $bookmark
+  echo -e "\033[1;37madd to bookmark !\033[0m"
+  read -es -n1 -t1
+  # ShowBookmark && showList
+}
+ShowBookmark()
+{
+  showbookmark=true
+  return 0
+}
+RemoveBookmark()
+{
+  noPara && return 1
+  if [ "${parameters%% *}" = "*" ];then
+    # linecount=$(sed -n '$=' $bookmark)
+    # parameters=$(seq $linecount)
+    :> $bookmark
+    ShowBookmark
+    return 0
+  fi
+  paraCheck
+
+  # sort $parameters max to min
+  arr=""
+  i=0
+  for num in $parameters;do
+    arr[$i]=$num
+    i=$((i+1))
+  done
+  len=${#arr[*]}
+  for((i=0;i<$((len-1));i++));do
+    for((j=$((len-1));j>i;j--));do
+      if [ ${arr[$j]} -gt ${arr[$((j-1))]} ];then
+        tmp=${arr[$j]}
+        arr[$j]=${arr[$((j-1))]}
+        arr[$((j-1))]=$tmp
+      fi
+    done
+  done
+
+  parameters=${arr[*]}
+
+  for num in $parameters
+  do
+    if numCheck $num;then
+      sed -i "${num}d" $bookmark
+    fi
+  done
+
+  ShowBookmark
+  return 0
+}
 
 Browser()
 {
@@ -586,7 +667,7 @@ Browser()
     echo -e "\033[1;33mCMD\033[0m:\c"
     for((i=1;i<${#cmdhistory[*]};i++))
     do
-      echo -e "\033[1;37m${i}\033[0m=${cmdhistory[$i]} \c"
+      echo -e "\033[1;37m.${i}\033[0m=${cmdhistory[$i]} \c"
     done
     echo 
 
@@ -629,7 +710,7 @@ Browser()
     then
       cd ..
       showList
-    elif [ "$cmd" = "-" ] || [ "$cmd" = "b" ]
+    elif [ "$cmd" = "-" ]
     then
       cd -
       showList
@@ -646,20 +727,10 @@ Browser()
       showList
     elif [ "$cmd" = "m" ] || [ "$cmd" = "mark" ] 
     then
-      prepath="$markpath"
-      markpath="$PWD"
-      echo -e "\033[1;37mthis directory has been marked !\033[0m"
-      # read -es -n1 -t1
+      Mark
     elif [ "$cmd" = "g" ] || [ "$cmd" = "goto" ] 
     then
-      if [ "$markpath" != "" ];then
-        [ "$PWD" != "$markpath" ] && prepath="$PWD" && cd "$markpath" || cd $prepath
-        # cd "$markpath"
-        showList
-      else
-        echo -e "\033[1;31mno directory is marked !\033[0m"
-        # read -es -n1 -t1
-      fi
+      GotoMark
     elif [ "$cmd" = "a" ] || [ "$cmd" = "all" ] 
     then
       [ "$hidden" = "true" ] && hidden=false || hidden=true
@@ -705,6 +776,15 @@ Browser()
     elif [ "$cmd" = "unpack" ] 
     then
       Unpack && showList
+    elif [ "$cmd" = "b" ] || [ "$cmd" = "bookmark" ]
+    then
+      Bookmark
+    elif [ "$cmd" = "bb" ]
+    then
+      ShowBookmark && showList
+    elif [ "$cmd" = "rmb" ]
+    then
+      RemoveBookmark && showList
     else
       # add input into cmdhistory
       found=false
