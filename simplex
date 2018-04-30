@@ -33,7 +33,6 @@ prepath=""
 
 cmd=""
 parameters=""
-lastinput=""
 
 filelist=/tmp/simplex.filelist.$$
 detaillist=/tmp/simplex.detaillist.$$
@@ -41,6 +40,7 @@ clipboardlist=/tmp/simplex.clipboardlist.$$
 findlist=/tmp/simplex.findlist.$$
 morelist=/tmp/simplex.morelist.$$
 
+# get alias from simplex.alias
 aliaslist=${basepath}/alias/simplex.alias
 aliasarr=""
 incomment=false
@@ -58,6 +58,10 @@ do
     incomment=false
   fi
 done < $aliaslist
+
+# cmd history
+cmdhistory=""
+cmdhistorycount=1
 
 # delete tmp files after EXIT
 trap 'rm -f $filelist $detaillist $clipboardlist $findlist $morelist' EXIT
@@ -577,18 +581,32 @@ Browser()
   do
     #echo -e "\033[1;32m$USER@$HOSTNAME\033[0m:\033[1;34m$PWD\033[0m$ \c"
     echo -e "\033[1;32m$USER@\033[0m\033[1;35msimpleX\033[0m:\033[1;34m$PWD\033[0m$"
-    echo -e "press . to repeate: $lastinput"
+
+    # display cmdhistory
+    echo -e "\033[1;33mCMD\033[0m:\c"
+    for((i=1;i<${#cmdhistory[*]};i++))
+    do
+      echo -e "\033[1;37m${i}\033[0m=${cmdhistory[$i]} \c"
+    done
+    echo 
+
+    # read input
     read -e -p "> " input
 
-    if [ "$input" = "." ];then
-      input=$lastinput
-    elif [ "$input" != "" ];then
-      lastinput=$input
+    # check if use cmdhistory
+    if [[ "$input" = . || "$input" = .[0-9] || "$input" = .[0-9][0-9] ]];then
+      i=${input##*.}
+      if [ "$i" = "" ];then
+        i=$((cmdhistorycount-1))
+      fi
+      input=${cmdhistory[$i]}
     fi
 
+    # separate cmd and parameters from input
     cmd=${input%% *}
     parameters=${input#* }
 
+    # cmd check
     if isNumber "$cmd"
     then
       if [ "$cmd" -gt "$linecount" ] || [ "$cmd" -le "0" ]
@@ -688,6 +706,20 @@ Browser()
     then
       Unpack && showList
     else
+      # add input into cmdhistory
+      found=false
+      for((i=1;i<${#cmdhistory[*]};i++))
+      do
+        if [ "$input" = "${cmdhistory[$i]}" ];then
+          found=true
+          break
+        fi
+      done
+      if [ $found = false ];then
+        cmdhistory[cmdhistorycount]="$input"
+        cmdhistorycount=$((cmdhistorycount+1))
+      fi
+
       cmdPlay && showList
     fi
   done

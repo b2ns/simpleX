@@ -11,6 +11,7 @@ use index(.e.g 1,2,3,4) to select a item:
 '-' or 'b'                   go back
 'r'                          refresh screen
 '.'                          repeate last action
+'.number'   .1 .2 .3         repeate a certain action
 '~' or 'home'                go home
 '/' or 'root'                go root
 'm' or 'mark'                mark a directory
@@ -56,7 +57,7 @@ if there is a file named 'main.js' and the index of it is 23,you can do anything
   cp main.js hello.js or cp 23 hello.js  
   rm -rf 23  
   tar -zcvf main.tar.gz 23  
-belowe can be done with a 'n' before number because simpleX can't tell index from normal numbers:  
+below can be done with a 'n' before number because simpleX can't tell index from normal numbers:  
   chmod n640 23  
   echo {"name": "simpleX","array": [n1,n2,n3]} > 23  
   cat 23 | grep -E '[n0-n9]+'  
