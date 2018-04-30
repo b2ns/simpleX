@@ -1,13 +1,14 @@
 /*
- * every alias must be in one line!
+ * all alias must be in one line!
  * $parameters for parameters you may put in
- * if you want to see the running result, put ';' at the end of the line
+ * if you want to see the running result, put ';' at the end of each line
  */
 
 // cd
 cdg=cd /home/ding/Code/Git
 cdt=cd /home/ding/tmp
 cdw=cd /home/ding/w3c
+cdm= cd /media/ding/D/Software/MCI/.skin
 
 // editor
 v=gvim $parameters
@@ -20,4 +21,5 @@ ga=git add $parameters;git status;
 gc=git commit -m "$parameters";
 gp=git push origin master;
 gg=git add .;git commit -m "$parameters";git push origin master;
+gcl=git clone $parameters;
 
