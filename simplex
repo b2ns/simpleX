@@ -89,12 +89,12 @@ showList()
   elif [ "$hidden" = "false" ] && [ "$detail" = "false" ];then
     ls > $filelist
   elif [ "$hidden" = "true" ] && [ "$detail" = "true" ];then
-    ls -alh > $detaillist && sed -i '1d' $detaillist || sed -i '' '1d' $detaillist
+    ls -alh > $detaillist && sed -i '1d' $detaillist 2> /dev/null || sed -i '' '1d' $detaillist
     ls -a > $filelist
   elif [ "$hidden" = "true" ];then
     ls -a > $filelist
   else
-    ls -lh > $detaillist && sed -i '1d' $detaillist || sed -i '' '1d' $detaillist
+    ls -lh > $detaillist && sed -i '1d' $detaillist 2> /dev/null || sed -i '' '1d' $detaillist
     ls > $filelist
   fi
 
