@@ -524,7 +524,7 @@ Unpack()
 
 Play()
 {
-  xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
+  xdg-open "$filename" 2> /dev/null || open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
   read -es -n1 -t1 
 }
 #Custom aliases
