@@ -89,12 +89,12 @@ showList()
   elif [ "$hidden" = "false" ] && [ "$detail" = "false" ];then
     ls > $filelist
   elif [ "$hidden" = "true" ] && [ "$detail" = "true" ];then
-    ls -alh > $detaillist && sed -i '1d' $detaillist 2> /dev/null || sed -i '' '1d' $detaillist
+    ls -alh > $detaillist && sed -i '1d' $detaillist
     ls -a > $filelist
   elif [ "$hidden" = "true" ];then
     ls -a > $filelist
   else
-    ls -lh > $detaillist && sed -i '1d' $detaillist 2> /dev/null || sed -i '' '1d' $detaillist
+    ls -lh > $detaillist && sed -i '1d' $detaillist
     ls > $filelist
   fi
 
@@ -410,7 +410,7 @@ Search()
 
   parameters=${parameters%% *}
   find ./ -mount -maxdepth 1 -iname "$parameters" > $findlist
-  sed -i 's/^..//' $findlist
+  sed -i 's/^.*\///' $findlist
 
   if [ -s "$findlist" ];then
     return 0
@@ -524,7 +524,7 @@ Unpack()
 
 Play()
 {
-  xdg-open "$filename" 2> /dev/null || open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
+  xdg-open "$filename" 2> /dev/null || echo -e "\033[1;31mcan't open \033[0m\033[1;35m$filename\033[0m\033[1;31m using default App !\nyou may choose another App to open it by inputting :\033[0m\n               AppName index"
   read -es -n1 -t1 
 }
 #Custom aliases
@@ -557,13 +557,13 @@ cmdPlay()
     if numCheck $num;then
       filename=$(sed -n ${num}p $filelist)
       #parameters=$(echo $parameters | sed "s/$prefix[0-9]\{1,\}/$filename/")
-      parameters=$(echo $parameters | sed "s/\b[0-9]\{1,\}\b/$filename/")
+      parameters=$(echo $parameters | sed "s/[0-9]\{1,\}/$filename/")
     else
       return 1
     fi
   done
   # delete prefix before normal number
-  parameters=$(echo $parameters | sed "s/\b${prefix}\([0-9]\{1,\}\)\b/\1/g")
+  parameters=$(echo $parameters | sed "s/${prefix}\([0-9]\{1,\}\)/\1/g")
 
   if Alias;then
     tmp=1
