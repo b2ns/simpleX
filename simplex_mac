@@ -639,7 +639,7 @@ RemoveBookmark()
   for num in $parameters
   do
     if numCheck $num;then
-      sed -i "${num}d" $bookmark
+      sed -i "" "${num}d" $bookmark
     fi
   done
 
